@@ -1,0 +1,87 @@
+:my-headers = <<
+Content-type: application/json
+User-Agent-x: SuiteScript-Call
+Authorization: NLAuth nlauth_account = your_account, nlauth_email = your_email, nlauth_signature = your_password
+#
+
+# load search
+GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&searchId=customsearch1330
+:my-headers
+
+#load search with page
+GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&searchId=customsearch2627&page=1
+:my-headers
+
+# load search with filters
+GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&searchId=customsearch1330&filters=custrecord_gst_instal_duedate;within;01/01/2018;05/02/2018
+:my-headers
+
+# load search with filters and page
+GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&searchId=customsearch2627&filters=custitem5;is;EXP&page=2
+:my-headers
+
+#load search with column sort
+GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&searchId=customsearch_bri_flash_customer_rm&page=0&sortcol=0&sortdir=DESC
+:my-headers
+
+# lookup fields
+GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&recordId=11232&type=customer&columns=companyname,custentity_psg_br_cnpj
+:my-headers
+
+#load search with page and cache
+GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&searchId=customsearch2627&page=1&cache=restclient.searchwpage
+:my-headers
+
+# create search
+GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&type=customrecord_c2b_loc_instalment&filters=custrecord_gst_instal_duedate;within;01/01/2018;05/02/2018,custrecord_gst_instal_transaction.mainline;is;T&columns=custrecord_gst_instal_transaction,custrecord_gst_instal_amount
+:my-headers
+
+# create search with pages
+GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&type=customrecord_c2b_loc_instalment&filters=custrecord_gst_instal_duedate;within;01/01/2018;05/02/2018,custrecord_gst_instal_transaction.mainline;is;T&columns=custrecord_gst_instal_transaction,custrecord_gst_instal_amount&page=2
+:my-headers
+
+#create record
+POST https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1
+:my-headers
+{
+  "type": "customrecord_bri_change_cfop_errors",
+  "columns": {
+      "custrecord_bri_error_details": "testing"
+    }
+}
+
+# update record
+PUT https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1
+:my-headers
+{
+  "type": "customrecord_bri_change_cfop_errors",
+  "recordId": 1306,
+  "values": {
+      "custrecord_bri_error_details": "testing"
+    }
+}
+
+#delete record
+DELETE https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&recordId=1306&type=customrecord_bri_change_cfop_errors
+:my-headers
+
+#create record with lines - TODO
+POST https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1
+:my-headers
+{
+  "type": "customrecord_bri_change_cfop_errors",
+  "columns": {
+      "custrecord_bri_error_details": "testing"
+    }
+}
+
+# update record with lines - TODO
+PUT https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1
+:my-headers
+{
+  "type": "customrecord_bri_change_cfop_errors",
+  "recordId": 1107,
+  "values": {
+      "custrecord_bri_error_details": "testing"
+    }
+}
