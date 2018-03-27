@@ -8,7 +8,7 @@ Authorization: NLAuth nlauth_account = your_account, nlauth_email = your_email, 
 GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&searchId=customsearch1330
 :my-headers
 
-#load search with page
+# load search with page
 GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&searchId=customsearch2627&page=1
 :my-headers
 
@@ -20,7 +20,7 @@ GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&s
 GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&searchId=customsearch2627&filters=custitem5;is;EXP&page=2
 :my-headers
 
-#load search with column sort
+# load search with column sort
 GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&searchId=customsearch_bri_flash_customer_rm&page=0&sortcol=0&sortdir=DESC
 :my-headers
 
@@ -28,7 +28,7 @@ GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&s
 GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&recordId=11232&type=customer&columns=companyname,custentity_psg_br_cnpj
 :my-headers
 
-#load search with page and cache
+# load search with page and cache
 GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&searchId=customsearch2627&page=1&cache=restclient.searchwpage
 :my-headers
 
@@ -40,7 +40,7 @@ GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&t
 GET https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&type=customrecord_c2b_loc_instalment&filters=custrecord_gst_instal_duedate;within;01/01/2018;05/02/2018,custrecord_gst_instal_transaction.mainline;is;T&columns=custrecord_gst_instal_transaction,custrecord_gst_instal_amount&page=2
 :my-headers
 
-#create record
+# create record
 POST https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1
 :my-headers
 {
@@ -61,11 +61,11 @@ PUT https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1
     }
 }
 
-#delete record
+# delete record
 DELETE https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1&recordId=1306&type=customrecord_bri_change_cfop_errors
 :my-headers
 
-#create record with lines - TODO
+# create record with lines - TODO
 POST https://rest.netsuite.com/app/site/hosting/restlet.nl?script=1160&deploy=1
 :my-headers
 {
