@@ -80,7 +80,7 @@ Send a PUT request to restlet with the body payload like this:
 ```json
 {
   "type": "invoice",
-  "recordId": 14
+  "recordId": 14,
   "values": {
   	"trandate": "01/03/2018"
   },
