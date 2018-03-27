@@ -2,13 +2,13 @@
 Generic restlet for netsuite that allow work with records like SuiteTalk, but using JSON.
 
 ## Quick Start
-You will need of the [Ramda.js](http://ramdajs.com/), after download ramda.min.js, put it in the src source.
+First, you will need [Ramda.js](http://ramdajs.com/), after download ramda.min.js, put it in the source folder.
 Upload the src files to File Cabinet, then create and implement a RESTlet script.
 
 ## Features
 
 ### Create record
-Send a POST request to restlet with the body payload like this:
+Sending a HTTP POST request to the restlet with this sample payload:
 ```json
 {
   "type": "invoice",
@@ -36,27 +36,27 @@ Send a POST request to restlet with the body payload like this:
 }
 ```
 ### Lookup/Search record
-With GET request, you can create search, load search and lookup records:
+Using HTTP GET request, you can create searches, load searches and lookup records:
 
 To create a search, you must send the following parameters (query string):
 * type - the record type
-* filters - filters separated by semicolons (to name, operator and value) and then  by comma. Formulas can't be used yet. To join, use dot separator (eg. customer.name)
-* columns - columns separated by comma. Formulas can't be used yet. To join, use dot separator (eg. customer.name)
+* filters - filters are separated by semicolons (to name, operator and value) and then  by comma. Formulas are not supported yet. To join tables, use dot separator (eg. customer.name)
+* columns - columns are separated by comma. Formulas are not supported yet. To join, use dot separator (eg. customer.name)
 
 Example:
 ``` sh
 curl -XGET https://your-url-reslet?type=invoice&filters=date;within;01/01/2018;05/02/2018,entity.name;is;Foo&columns=amount,trandate
 ```
 
-To load search you must send the following parameters:
-* searchId - id of saved search in NetSuite
+To load a search you must send the following parameters:
+* searchId - the id of saved search in NetSuite
 
 Example:
 ``` sh
 curl -XGET https://your-url-reslet?searchId=your-search-id
 ```
 
-To lookup record fields, send following parameters:
+To lookup record fields, you must send the following parameters:
 * type - record type
 * recordId - record id
 * columns - columns separated by comma. To join, use dot separator (eg. customer.name)
@@ -66,17 +66,17 @@ Example:
 curl -XGET https://your-url-reslet?type=customer&recordId=15&columns=companyname,phone
 ```
 
-All search options accepted pagination and sort columns, just use following parameters:
+All search options accepts pagination and sort columns, just use the following parameters:
 * page - page number
 * sortdir - sort direction (ASC|DESC|NONE)
 * sortcol - column number to be sorted (begin with 0)
 
-All GET request can be cached, just use following parameters:
+All GET request can be cached, just use the following parameters:
 * cache - Cache name and key (separated by dot)
 
 
 ### Update record
-Send a PUT request to restlet with the body payload like this:
+Send a HTTP PUT request to the restlet with this sample payload:
 ```json
 {
   "type": "invoice",
@@ -89,11 +89,11 @@ Send a PUT request to restlet with the body payload like this:
    }
 }
 ```
-Can't update lines yet.
+Update lines is not supported yet.
 ### Delete record
-Send a delete request to delete record, following the parameters:
+Send a delete request to delete a record, following the parameters:
 ``` sh
 curl -XGET https://your-url-reslet?type=customer&recordId=15
 ```
 ## Tests
-In test folder has a .https file that allow use the [restclient](https://github.com/pashky/restclient.el) (for emacs) for make requests tests.
+In test folder has a .https file that allows you to use the [restclient](https://github.com/pashky/restclient.el) (for emacs) to make requests tests.
