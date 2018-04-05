@@ -223,27 +223,43 @@ define(
             try {
                 const type = context.type;
                 const isDynamic = context.isDynamic;
-                const columns = context.columns || [];
+                const columns = context.columns || {};
                 const lines = context.lines || [];
                 const options = context.options;
 
+                var defaultValues = {};
+                if (columns.entity) defaultValues.entity = columns.entity;
+                if (columns.subsidiary) defaultValues.subsidiary = columns.subsidiary;
+
                 const newRecord = record.create({
                     type: type,
-                    isDynamic: !!isDynamic
+                    isDynamic: !!isDynamic,
+                    defaultValues: defaultValues
                 });
 
-                R.forEach(function (column) {
-                    R.forEach(function (key) {
-                        newRecord.setValue({
-                            fieldId: key,
-                            value: column[key]
-                        });
-                    }, R.keys(column));
-                }, columns);
+                log.debug({
+                    title: 'columns for new record with type=' + type,
+                    details: [columns]
+                });
+
+                Object.keys(columns).forEach(function (column) {
+                    if (column.indexOf('date') != -1) {
+                        columns[column] = new Date(columns[column] * 1000);
+                    }
+                    else if (columns[column] == 'FALSE') columns[column] = false;
+                    else if (columns[column] == 'TRUE')  columns[column] = true;
+
+                    newRecord.setValue({
+                        fieldId: column,
+                        value: columns[column]
+                    });
+                });
 
                 R.forEach(function (line) {
-                    newRecord.selectNewLine({sublistId: line.sublistId});
+                  if (!!isDynamic) {
                     line.lineItems.forEach(function (lineItem) {
+                        newRecord.selectNewLine({sublistId: line.sublistId});
+
                         R.forEach(function (key) {
                             newRecord.setCurrentSublistValue({
                                 sublistId: line.sublistId,
@@ -251,10 +267,24 @@ define(
                                 value: lineItem[key]
                             });
                         }, R.keys(lineItem));
+
+                        newRecord.commitLine({sublistId: line.sublistId});
                     });
-                    newRecord.commitLine({
-                        sublistId: line.sublistId
+                  } else {
+                    var lineIdx = 0;
+                    line.lineItems.forEach(function (lineItem) {
+                        R.forEach(function (key) {
+                            newRecord.setSublistValue({
+                                sublistId: line.sublistId,
+                                fieldId: key,
+                                value: lineItem[key],
+                                line: lineIdx,
+                                ignoreFieldChange: false
+                            });
+                        }, R.keys(lineItem));
+                        lineIdx++;
                     });
+                  }
                 }, lines);
 
                 return newRecord.save(options);

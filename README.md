@@ -12,10 +12,11 @@ Sending a HTTP POST request to the restlet with this sample payload:
 ```json
 {
   "type": "invoice",
+  "isDynamic": false,
   "columns": {
       "customer": "14"
-    },
-    "lines": [
+  },
+  "lines": [
       {
           "sublistId": "item",
           "lineItems": [
@@ -29,10 +30,10 @@ Sending a HTTP POST request to the restlet with this sample payload:
               }
           ]
       }
-    ],
-    "options":{
-		"isDynamic": false
-    }
+  ],
+  "options": {
+      "ignoreMandatoryFields": false
+  }
 }
 ```
 ### Lookup/Search record
