@@ -7,9 +7,10 @@ define(
         'N/search',
         'N/record',
         'N/cache',
+        'N/format',
         './ramda.min.js'
     ],
-    function (search, record, cache, R) {
+    function (search, record, cache, fmt, R) {
         function get (context) {
             /**
              * Generate columns by comma separated
@@ -225,11 +226,8 @@ define(
                 const isDynamic = context.isDynamic;
                 const columns = context.columns || {};
                 const lines = context.lines || [];
+                const defaultValues = context.defaultValues
                 const options = context.options;
-
-                var defaultValues = {};
-                if (columns.entity) defaultValues.entity = columns.entity;
-                if (columns.subsidiary) defaultValues.subsidiary = columns.subsidiary;
 
                 const newRecord = record.create({
                     type: type,
@@ -237,54 +235,44 @@ define(
                     defaultValues: defaultValues
                 });
 
-                log.debug({
-                    title: 'columns for new record with type=' + type,
-                    details: [columns]
-                });
-
-                Object.keys(columns).forEach(function (column) {
-                    if (column.indexOf('date') != -1) {
-                        columns[column] = new Date(columns[column] * 1000);
-                    }
-                    else if (columns[column] == 'FALSE') columns[column] = false;
-                    else if (columns[column] == 'TRUE')  columns[column] = true;
+                R.forEach(function(column) {
+                    const value = R.contains('date', column)
+                          ? fmt.parse({type: fmt.Type.DATE, value: columns[column]})
+                          : columns[column]
 
                     newRecord.setValue({
                         fieldId: column,
-                        value: columns[column]
-                    });
-                });
+                        value: value
+                    })
+                }, R.keys(columns))
 
                 R.forEach(function (line) {
-                  if (!!isDynamic) {
-                    line.lineItems.forEach(function (lineItem) {
-                        newRecord.selectNewLine({sublistId: line.sublistId});
+                    R.forEach(function (lineItem) {
+                        if (!!isDynamic) {
+                            newRecord.selectNewLine({sublistId: line.sublistId});
 
-                        R.forEach(function (key) {
-                            newRecord.setCurrentSublistValue({
-                                sublistId: line.sublistId,
-                                fieldId: key,
-                                value: lineItem[key]
-                            });
-                        }, R.keys(lineItem));
+                            R.forEach(function (key) {
+                                newRecord.setCurrentSublistValue({
+                                    sublistId: line.sublistId,
+                                    fieldId: key,
+                                    value: lineItem[key]
+                                });
+                            }, R.keys(lineItem));
 
-                        newRecord.commitLine({sublistId: line.sublistId});
-                    });
-                  } else {
-                    var lineIdx = 0;
-                    line.lineItems.forEach(function (lineItem) {
-                        R.forEach(function (key) {
+                            return newRecord.commitLine(
+                                {sublistId: line.sublistId}
+                            );
+                        }
+
+                        R.keys(lineItem).forEach(function (key, i) {
                             newRecord.setSublistValue({
                                 sublistId: line.sublistId,
                                 fieldId: key,
                                 value: lineItem[key],
-                                line: lineIdx,
-                                ignoreFieldChange: false
+                                line: i
                             });
-                        }, R.keys(lineItem));
-                        lineIdx++;
-                    });
-                  }
+                        });
+                    }, line.lineItems);
                 }, lines);
 
                 return newRecord.save(options);
@@ -294,7 +282,7 @@ define(
                     details: JSON.stringify(err)
                 });
 
-                return err;
+                return err
             }
         }
 
@@ -315,7 +303,9 @@ define(
                 log.debug({
                     title: 'PUT',
                     details: JSON.stringify(err)
-                });
+                })
+
+                return err
             }
         }
 
@@ -333,6 +323,8 @@ define(
                     title: 'DELETE',
                     details: JSON.stringify(err)
                 });
+
+                return err
             }
         }
 
