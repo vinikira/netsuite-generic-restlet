@@ -13,10 +13,10 @@ define(
     function (search, record, cache, fmt, R) {
         function get (context) {
             /**
-             * Generate columns by comma separated
-             * @example 'internalid,entityid,ordernumber'
+             * Generate columns, from comma separated string, example: 'internalid,entityid,ordernumber'
+             * If there is a join (column from another table), use dot notation, example: transaction.lineuniquekey
              * @param {Object} context - request context
-             * @param {String} context.columns - columns
+             * @param {String} context.columns - columns, comma separated, joins with dot notation
              * @return {Array}
              */
             const generateColumns = function (context) {
@@ -24,9 +24,12 @@ define(
                     ? context.columns
                         .split(',')
                         .map(function (column) {
+                            const columnName = column.split('.');
+                            const hasJoin = columnName.length > 1;
                             return search.createColumn({
-                                name: column
-                            })
+                                name: hasJoin ? columnName[1] : columnName[0],
+                                join: hasJoin ? columnName[0] : ''
+                            });
                         })
                     : []
             }
